@@ -8,17 +8,36 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+protocol SelectedProject {
+    func getSelectedProject() -> Project
+}
 
-    @IBOutlet weak var detailDescriptionLabel: UILabel!
-
+class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SelectedProject {
+    
+    func getSelectedProject() -> Project {
+        return selectedProject!
+    }
+    
+    let list = ["Please", "work", "man"]
+    var selectedProject:Project? = nil
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return list.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "cell")
+        cell.textLabel?.text = list[indexPath.row]
+        
+        return cell
+    }
 
     func configureView() {
-        // Update the user interface for the detail item.
+        // Update the user interface for the project item.
         if let detail = detailItem {
-            if let label = detailDescriptionLabel {
-                label.text = detail.timestamp!.description
-            }
+            selectedProject = detail
+            
+            
         }
     }
 
@@ -28,13 +47,18 @@ class DetailViewController: UIViewController {
         configureView()
     }
 
-    var detailItem: Event? {
+    var detailItem: Project? {
         didSet {
             // Update the view.
             configureView()
         }
     }
 
-
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let taskPopUp = segue.destination as? TaskPopUpViewController {
+            taskPopUp.selectedProject = self
+        }
+    }
+    
 }
 
