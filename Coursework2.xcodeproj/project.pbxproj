@@ -15,6 +15,7 @@
 		0A15F4112291C88700FA4779 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0A15F40F2291C88700FA4779 /* LaunchScreen.storyboard */; };
 		0A1E1E1622982D9B00C2C427 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0A1E1E1422982D9B00C2C427 /* DataModel.xcdatamodeld */; };
 		0A533146229857730014D520 /* ProjectPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A533145229857730014D520 /* ProjectPopupViewController.swift */; };
+		0A53314822986FBB0014D520 /* TaskPopUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A53314722986FBB0014D520 /* TaskPopUpViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		0A15F4122291C88700FA4779 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0A1E1E1522982D9B00C2C427 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		0A533145229857730014D520 /* ProjectPopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectPopupViewController.swift; sourceTree = "<group>"; };
+		0A53314722986FBB0014D520 /* TaskPopUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskPopUpViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 				0A15F4122291C88700FA4779 /* Info.plist */,
 				0A1E1E1422982D9B00C2C427 /* DataModel.xcdatamodeld */,
 				0A533145229857730014D520 /* ProjectPopupViewController.swift */,
+				0A53314722986FBB0014D520 /* TaskPopUpViewController.swift */,
 			);
 			path = Coursework2;
 			sourceTree = "<group>";
@@ -146,6 +149,7 @@
 			files = (
 				0A15F4022291C88700FA4779 /* AppDelegate.swift in Sources */,
 				0A1E1E1622982D9B00C2C427 /* DataModel.xcdatamodeld in Sources */,
+				0A53314822986FBB0014D520 /* TaskPopUpViewController.swift in Sources */,
 				0A15F4072291C88700FA4779 /* MasterViewController.swift in Sources */,
 				0A15F4092291C88700FA4779 /* DetailViewController.swift in Sources */,
 				0A533146229857730014D520 /* ProjectPopupViewController.swift in Sources */,
