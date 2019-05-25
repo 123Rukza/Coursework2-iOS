@@ -12,10 +12,11 @@ import CoreData
 class TaskPopUpViewController: UIViewController {
 
     @IBOutlet var txtTaskName: UITextView!
-    @IBOutlet weak var txtTaskNotes: UITextView!
+    @IBOutlet weak var txtTaskNotes: UITextField!
     @IBOutlet weak var selStartDate: UIDatePicker!
     @IBOutlet weak var selDueDate: UIDatePicker!
     @IBOutlet weak var swiDelayAlert: UISwitch!
+    @IBOutlet weak var txtCompletion: UITextField!
     
     var selectedProject: SelectedProject?
     
@@ -38,13 +39,23 @@ class TaskPopUpViewController: UIViewController {
         let start = selStartDate.date
         let end = selDueDate.date
         let alert = swiDelayAlert.isOn
+        let percentage = txtCompletion.text!
         let project = selectedProject!.getSelectedProject()
+        
+        var val = 0
+        
+        do {
+            val = Int(percentage)!
+        } catch  {
+            val = 0
+        }
         
         task.setValue(name, forKey: "name")
         task.setValue(notes, forKey: "notes")
         task.setValue(start, forKey: "start")
         task.setValue(end, forKey: "end")
         task.setValue(alert, forKey: "alert")
+        task.setValue(val, forKey: "percentage")
         task.setValue(project, forKey: "master")
         
         var alertMessage = "Successfully added task " + name
@@ -66,14 +77,4 @@ class TaskPopUpViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

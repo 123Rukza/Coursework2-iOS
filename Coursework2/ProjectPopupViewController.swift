@@ -14,7 +14,7 @@ class ProjectPopupViewController: UIViewController {
     @IBOutlet weak var txtProjectName: UITextField!
     @IBOutlet weak var segProjectPriority: UISegmentedControl!
     @IBOutlet weak var selDueDate: UIDatePicker!
-    @IBOutlet weak var txtNotes: UITextView!
+    @IBOutlet weak var txtNotes: UITextField!
     @IBOutlet weak var swiAddCalendar: UISwitch!
     
     override func viewDidLoad() {
