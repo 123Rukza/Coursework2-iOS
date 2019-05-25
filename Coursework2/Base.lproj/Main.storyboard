@@ -217,6 +217,7 @@
                         <outlet property="projectPercentage" destination="D3D-LF-Ga3" id="J1m-4X-C8m"/>
                         <outlet property="projectPercentageLabel" destination="avW-vH-1yK" id="u68-Z3-Mxd"/>
                         <outlet property="projectSubTitle" destination="BHa-m6-sji" id="Oh5-q0-Hb2"/>
+                        <outlet property="taskTableView" destination="pxm-pB-sgi" id="i73-If-ezr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>

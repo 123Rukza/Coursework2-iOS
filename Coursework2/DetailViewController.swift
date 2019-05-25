@@ -13,9 +13,9 @@ protocol SelectedProject {
     func getSelectedProject() -> Project
 }
 
-class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SelectedProject {
+class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SelectedProject, NSFetchedResultsControllerDelegate {
     
-    var taskList: [Task] = []
+    var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     var selectedProject:Project? = nil
     
     @IBOutlet weak var projectPercentage: M13ProgressViewPie!
@@ -25,35 +25,46 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var projectMainTitle: UILabel!
     @IBOutlet weak var projectSubTitle: UILabel!
     @IBOutlet weak var projectNotes: UILabel!
+    @IBOutlet weak var taskTableView: UITableView!
     
     func updateProjectArea() {
         
-        if (taskList.count > 0) {
+        var taskList = fetchedResultsController?.fetchedObjects as! [Task]
+        var earliestDate = Date()
+        
+        var i = 0
+        var percentage = 0
+        while i < taskList.count {
+            percentage += Int(taskList[i].percentage)
             
-            
-            var i = 0
-            var percentage = 0
-            while i < taskList.count {
-                percentage += Int(taskList[i].percentage)
-                i += 1
+            if taskList[i].start! < earliestDate {
+                earliestDate = taskList[i].start!
             }
             
-            let percentComplete:Double = Double(percentage/i)
-            
-            projectPercentageLabel.text! = String(percentComplete) + "% Complete"
-            projectPercentage.setProgress(CGFloat((percentComplete/100.0)), animated: true)
-            
-            let daysLeft = Calendar.current.dateComponents([.day], from: Date(), to: (selectedProject?.due!)!).day
-            projectDaysRemainingLabel.text = String(daysLeft!) + " days left"
-            
-            let totalDays = Calendar.current.dateComponents([.day], from: Date(), to: (selectedProject?.due!)!).day
+            i += 1
         }
+        
+        let percentComplete:Double = Double(percentage)/Double(i)
+        
+        projectPercentageLabel.text! = String(format: "%.2f", percentComplete) + "% Complete"
+        projectPercentage.setProgress(CGFloat((percentComplete/100.0)), animated: true)
+        
+        let daysLeft = Calendar.current.dateComponents([.day], from: Date(), to: (selectedProject?.due!)!).day
+        projectDaysRemainingLabel.text = String(daysLeft!) + " days left"
+        
+        
+//        INCOMPLETE
+        let totalDays = Calendar.current.dateComponents([.day], from: earliestDate, to: (selectedProject?.due!)!).day
+        let daysSpent = Calendar.current.dateComponents([.day], from: earliestDate, to: Date()).day
+        let daysSpentPercent:Double = Double(daysSpent!)/Double(totalDays!)
+        
+        projectDaysRemaining.setProgress(CGFloat(daysSpentPercent/100.0), animated: true)
     }
     
     func setProjectNames() {
-            projectMainTitle.text = "Project " + (selectedProject?.name)! + " - Summary"
-            projectSubTitle.text = "Priority status - " + (selectedProject?.priority!)!
-            projectNotes.text = selectedProject?.notes!
+        projectMainTitle.text = "Project " + (selectedProject?.name)! + " - Summary"
+        projectSubTitle.text = "Priority status - " + (selectedProject?.priority!)!
+        projectNotes.text = selectedProject?.notes!
     }
     
     func getSelectedProject() -> Project {
@@ -61,13 +72,14 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return taskList.count
+        return fetchedResultsController?.sections?[section].numberOfObjects ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let taskName = taskList[indexPath.row].name!
-        let taskDescription = String((taskList[indexPath.row].end?.description.prefix(16))!)
-        let taskPercentage:Double = Double(taskList[indexPath.row].percentage)/100.0
+        let task = fetchedResultsController!.object(at: indexPath) as! Task
+        let taskName = task.name!
+        let taskDescription = String((task.end?.description.prefix(16))!)
+        let taskPercentage:Double = Double(task.percentage)/100.0
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! TaskTableViewCell
         cell.taskNumber.text = "Task " + String(indexPath.row + 1)
@@ -80,7 +92,6 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     var detailItem: Project? {
         didSet {
-            // Update the view.
             self.loadViewIfNeeded()
             setProjectNames()
             configureView()
@@ -92,8 +103,26 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if let detail = detailItem {
             selectedProject = detail
             
-            taskList = (selectedProject?.tasks?.allObjects as! [Task])
-            taskList.reverse()
+            // connect to app delegate
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            
+            // create DB context
+            let context = appDelegate.persistentContainer.viewContext
+            
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Task")
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+            
+            fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+            fetchedResultsController?.delegate = self
+            fetchedResultsController!.fetchRequest.predicate = NSPredicate(format: "master == %@", selectedProject!)
+            
+            do {
+                try fetchedResultsController!.performFetch()
+            } catch {
+                fatalError("Error getting data from Core Data")
+            }
+            
+            taskTableView.reloadData()
             
             if (selectedProject != nil) {
                 updateProjectArea()
@@ -101,9 +130,40 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        taskTableView.beginUpdates()
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        taskTableView.endUpdates()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch (type) {
+        case .insert:
+            if let indexPath = newIndexPath {
+                taskTableView.insertRows(at: [indexPath], with: UITableView.RowAnimation.fade)
+            }
+            break
+        case .update:
+            if let indexPath = indexPath {
+                let cell = taskTableView.cellForRow(at: indexPath) as! TaskTableViewCell
+                // DO CELL UPDATE HERE WITH INDEXPATH
+            }
+            break
+        case .delete:
+            if let indexPath = indexPath {
+                taskTableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.fade)
+            }
+            break
+        case .move:
+            print("")
+            // NO MOVING IN THIS APPLICATION
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         configureView()
     }
     
