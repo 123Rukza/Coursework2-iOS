@@ -52,8 +52,6 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let daysLeft = Calendar.current.dateComponents([.day], from: Date(), to: (selectedProject?.due!)!).day
         projectDaysRemainingLabel.text = String(daysLeft!) + " days left"
         
-        
-//        INCOMPLETE
         let totalDays = Calendar.current.dateComponents([.day], from: earliestDate, to: (selectedProject?.due!)!).day
         let daysSpent = Calendar.current.dateComponents([.day], from: earliestDate, to: Date()).day
         let daysSpentPercent:Double = Double(daysSpent!)/Double(totalDays!)

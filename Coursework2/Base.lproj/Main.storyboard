@@ -303,7 +303,7 @@
         <!--Project Popup View Controller-->
         <scene sceneID="2na-hp-E0V">
             <objects>
-                <viewController id="6xH-sE-t4Y" customClass="ProjectPopupViewController" customModule="Coursework2" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="projectPopUp" id="6xH-sE-t4Y" customClass="ProjectPopupViewController" customModule="Coursework2" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="lzm-6H-Rrm">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="410"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

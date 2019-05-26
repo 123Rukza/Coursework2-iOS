@@ -10,26 +10,39 @@ import UIKit
 import CoreData
 
 class ProjectPopupViewController: UIViewController {
-
+    
     @IBOutlet weak var txtProjectName: UITextField!
     @IBOutlet weak var segProjectPriority: UISegmentedControl!
     @IBOutlet weak var selDueDate: UIDatePicker!
     @IBOutlet weak var txtNotes: UITextField!
     @IBOutlet weak var swiAddCalendar: UISwitch!
     
+    var isUpdate: Bool?
+    var updateProject: NSManagedObject?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if isUpdate ?? false {
+            let priorityText = updateProject?.value(forKey: "priority") as? String
+            var priorityIndex = 0
+            
+            if priorityText == "Medium" {
+                priorityIndex = 1
+            } else if priorityText == "High" {
+                priorityIndex = 2
+            }
+            
+            txtProjectName.text = updateProject?.value(forKey: "name") as? String
+            segProjectPriority.selectedSegmentIndex = priorityIndex
+            selDueDate.date = updateProject?.value(forKey: "due") as! Date
+            txtNotes.text = updateProject?.value(forKey: "notes") as? String
+            swiAddCalendar.isOn = updateProject?.value(forKey: "calendar") as! Bool
+        }
     }
     
     @IBAction func btnSave(_ sender: Any) {
-        // connect to app delegate
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         
-        // create DB context
-        let context = appDelegate.persistentContainer.viewContext
-        
-        // create new records
-        let project = NSEntityDescription.insertNewObject(forEntityName: "Project", into: context)
         
         let name = txtProjectName.text!
         let priority = segProjectPriority.titleForSegment(at: segProjectPriority.selectedSegmentIndex)!
@@ -37,16 +50,35 @@ class ProjectPopupViewController: UIViewController {
         let notes = txtNotes.text!
         let addCalendar = swiAddCalendar.isOn
         
-        project.setValue(name, forKey: "name")
-        project.setValue(priority, forKey: "priority")
-        project.setValue(dueDate, forKey: "due")
-        project.setValue(notes, forKey: "notes")
-        project.setValue(addCalendar, forKey: "calendar")
-        
         var alertMessage = "Successfully saved project " + name
         
         do {
-            try context.save()
+            if isUpdate ?? false {
+                updateProject?.setValue(name, forKey: "name")
+                updateProject?.setValue(priority, forKey: "priority")
+                updateProject?.setValue(dueDate, forKey: "due")
+                updateProject?.setValue(notes, forKey: "notes")
+                updateProject?.setValue(addCalendar, forKey: "calendar")
+                
+                try updateProject?.managedObjectContext?.save()
+            } else {
+                // connect to app delegate
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                
+                // create DB context
+                let context = appDelegate.persistentContainer.viewContext
+                
+                // create new records
+                let project = NSEntityDescription.insertNewObject(forEntityName: "Project", into: context)
+                
+                project.setValue(name, forKey: "name")
+                project.setValue(priority, forKey: "priority")
+                project.setValue(dueDate, forKey: "due")
+                project.setValue(notes, forKey: "notes")
+                project.setValue(addCalendar, forKey: "calendar")
+                
+                try context.save()
+            }
         } catch let error as NSError {
             alertMessage = "An error has occured while saving. Please restart the application and try again. Error info: " + error.localizedDescription
         }
@@ -63,13 +95,13 @@ class ProjectPopupViewController: UIViewController {
     }
     
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destination.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }
