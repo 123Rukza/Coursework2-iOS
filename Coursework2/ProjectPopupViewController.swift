@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import EventKit
 
 class ProjectPopupViewController: UIViewController {
     
@@ -43,7 +44,6 @@ class ProjectPopupViewController: UIViewController {
     
     @IBAction func btnSave(_ sender: Any) {
         
-        
         let name = txtProjectName.text!
         let priority = segProjectPriority.titleForSegment(at: segProjectPriority.selectedSegmentIndex)!
         let dueDate = selDueDate.date
@@ -78,6 +78,11 @@ class ProjectPopupViewController: UIViewController {
                 project.setValue(addCalendar, forKey: "calendar")
                 
                 try context.save()
+                
+                let projectCreated = project as! Project
+                if projectCreated.calendar {
+                    addToCalendar(project: projectCreated)
+                }
             }
         } catch let error as NSError {
             alertMessage = "An error has occured while saving. Please restart the application and try again. Error info: " + error.localizedDescription
@@ -94,14 +99,26 @@ class ProjectPopupViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
+    func addToCalendar(project: Project) {
+        let store = EKEventStore()
+        
+        store.requestAccess(to: .event, completion: {(success, error) in
+            if error == nil {
+                let event = EKEvent.init(eventStore: store)
+                event.title = project.name
+                event.calendar = store.defaultCalendarForNewEvents
+                event.startDate = project.due
+                event.endDate = project.due! + 1
+                
+                do {
+                    try store.save(event, span: .thisEvent)
+                } catch let error as Error {
+                    print("Failed : " + error.localizedDescription)
+                }
+            } else {
+                print("Failed : " + (error?.localizedDescription)!)
+            }
+        })
+    }
     
 }

@@ -31,6 +31,7 @@
 		0A71A82F2299341F00FB96A8 /* M13ProgressViewSegmentedBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A71A81A2299341F00FB96A8 /* M13ProgressViewSegmentedBar.m */; };
 		0A71A8302299341F00FB96A8 /* M13ProgressViewSegmentedRing.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A71A81C2299341F00FB96A8 /* M13ProgressViewSegmentedRing.m */; };
 		0A71A8312299341F00FB96A8 /* M13ProgressViewStripedBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A71A81E2299341F00FB96A8 /* M13ProgressViewStripedBar.m */; };
+		0A7CE812229A7ECC009F4BEE /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7CE811229A7ECC009F4BEE /* EventKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +76,7 @@
 		0A71A81C2299341F00FB96A8 /* M13ProgressViewSegmentedRing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M13ProgressViewSegmentedRing.m; sourceTree = "<group>"; };
 		0A71A81D2299341F00FB96A8 /* M13ProgressViewStripedBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M13ProgressViewStripedBar.h; sourceTree = "<group>"; };
 		0A71A81E2299341F00FB96A8 /* M13ProgressViewStripedBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M13ProgressViewStripedBar.m; sourceTree = "<group>"; };
+		0A7CE811229A7ECC009F4BEE /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A7CE812229A7ECC009F4BEE /* EventKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +96,7 @@
 			children = (
 				0A15F4002291C88700FA4779 /* Coursework2 */,
 				0A15F3FF2291C88700FA4779 /* Products */,
+				0A7CE810229A7ECC009F4BEE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -157,6 +161,14 @@
 				0A71A7EF229933EA00FB96A8 /* Coursework2-Bridging-Header.h */,
 			);
 			path = Frameworks;
+			sourceTree = "<group>";
+		};
+		0A7CE810229A7ECC009F4BEE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0A7CE811229A7ECC009F4BEE /* EventKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

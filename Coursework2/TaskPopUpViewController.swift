@@ -16,7 +16,7 @@ class TaskPopUpViewController: UIViewController {
     @IBOutlet weak var selStartDate: UIDatePicker!
     @IBOutlet weak var selDueDate: UIDatePicker!
     @IBOutlet weak var swiDelayAlert: UISwitch!
-    @IBOutlet weak var txtCompletion: UITextField!
+    @IBOutlet weak var sldCompletion: UISlider!
     
     var selectedProject: SelectedProject?
     var isUpdate: Bool?
@@ -31,7 +31,7 @@ class TaskPopUpViewController: UIViewController {
             selStartDate.date = (updateTask?.value(forKey: "start") as? Date)!
             selDueDate.date = (updateTask?.value(forKey: "end") as? Date)!
             swiDelayAlert.isOn = (updateTask?.value(forKey: "alert") as? Bool)!
-            txtCompletion.text! = String(updateTask?.value(forKey: "percentage") as! Int)
+            sldCompletion.value = Float(updateTask?.value(forKey: "percentage") as! Int)
         }
     }
     
@@ -41,10 +41,8 @@ class TaskPopUpViewController: UIViewController {
         let start = selStartDate.date
         let end = selDueDate.date
         let alert = swiDelayAlert.isOn
-        let percentage = txtCompletion.text!
+        let percentage = Int(sldCompletion.value)
         let project = selectedProject!.getSelectedProject()
-        
-        let val = Int(percentage) ?? 0
         
         var alertMessage = "Successfully added task " + name
         
@@ -55,7 +53,7 @@ class TaskPopUpViewController: UIViewController {
                 updateTask?.setValue(start, forKey: "start")
                 updateTask?.setValue(end, forKey: "end")
                 updateTask?.setValue(alert, forKey: "alert")
-                updateTask?.setValue(val, forKey: "percentage")
+                updateTask?.setValue(percentage, forKey: "percentage")
                 updateTask?.setValue(project, forKey: "master")
                 
                 try updateTask?.managedObjectContext?.save()
@@ -74,7 +72,7 @@ class TaskPopUpViewController: UIViewController {
                 task.setValue(start, forKey: "start")
                 task.setValue(end, forKey: "end")
                 task.setValue(alert, forKey: "alert")
-                task.setValue(val, forKey: "percentage")
+                task.setValue(percentage, forKey: "percentage")
                 task.setValue(project, forKey: "master")
                 
                 try context.save()
