@@ -13,6 +13,6 @@ class TaskTableViewCell: UITableViewCell {
     @IBOutlet weak var progressBar: M13ProgressViewBorderedBar!
     @IBOutlet weak var taskNumber: UILabel!
     @IBOutlet weak var taskName: UILabel!
+    @IBOutlet weak var taskNotes: UILabel!
     
-
 }

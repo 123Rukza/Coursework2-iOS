@@ -58,7 +58,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let daysSpent = Calendar.current.dateComponents([.day], from: earliestDate, to: Date()).day
         let daysSpentPercent:Double = Double(daysSpent!)/Double(totalDays!)
         
-        projectDaysRemaining.setProgress(CGFloat(daysSpentPercent/100.0), animated: true)
+        projectDaysRemaining.setProgress(CGFloat(daysSpentPercent), animated: true)
     }
     
     func setProjectNames() {
@@ -78,6 +78,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let task = fetchedResultsController!.object(at: indexPath) as! Task
         let taskName = task.name!
+        let taskNotes = task.notes!
         let taskDescription = String((task.end?.description.prefix(16))!)
         let taskPercentage:Double = Double(task.percentage)/100.0
         
@@ -87,6 +88,8 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         cell.progressBar.setProgress(CGFloat(taskPercentage), animated: true)
         
         cell.taskName.text = taskName + " - Due: " + taskDescription
+        
+        cell.taskNotes.text = taskNotes
         return cell
     }
     
@@ -147,8 +150,20 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
             break
         case .update:
             if let indexPath = indexPath {
+                let task = fetchedResultsController!.object(at: indexPath) as! Task
+                let taskName = task.name!
+                let taskNotes = task.notes!
+                let taskDescription = String((task.end?.description.prefix(16))!)
+                let taskPercentage:Double = Double(task.percentage)/100.0
                 let cell = taskTableView.cellForRow(at: indexPath) as! TaskTableViewCell
-                // DO CELL UPDATE HERE WITH INDEXPATH
+                
+                cell.taskNumber.text = "Task " + String(indexPath.row + 1)
+                
+                cell.progressBar.setProgress(CGFloat(taskPercentage), animated: true)
+                
+                cell.taskName.text = taskName + " - Due: " + taskDescription
+                
+                cell.taskNotes.text = taskNotes
             }
             break
         case .delete:
@@ -162,6 +177,28 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let row = fetchedResultsController?.object(at: indexPath) as! NSManagedObject
+            
+            // connect to app delegate
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            
+            // create DB context
+            let context = appDelegate.persistentContainer.viewContext
+            
+            context.delete(row)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        taskTableView.deselectRow(at: indexPath, animated: true)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
@@ -170,6 +207,17 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let taskPopUp = segue.destination as? TaskPopUpViewController {
             taskPopUp.selectedProject = self
+        }
+        
+        if segue.identifier == "updateSegue" {
+            if let taskModal = segue.destination as? TaskPopUpViewController {
+                if let indexPath = taskTableView.indexPathForSelectedRow {
+                    let row = fetchedResultsController?.object(at: indexPath) as! NSManagedObject
+                    
+                    taskModal.isUpdate = true
+                    taskModal.updateTask = row
+                }
+            }
         }
     }
     

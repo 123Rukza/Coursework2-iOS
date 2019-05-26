@@ -63,17 +63,19 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j81-wY-4w9">
-                                                    <rect key="frame" x="699" y="39" width="30" height="30"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="30" id="7Lq-OD-kpG"/>
-                                                    </constraints>
-                                                    <state key="normal" title="Edit"/>
-                                                </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n67-88-4Ls">
                                                     <rect key="frame" x="15" y="42" width="148" height="24"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="148" id="Vy5-2W-9cL"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QC8-Cc-HLv">
+                                                    <rect key="frame" x="589" y="39" width="148" height="24"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="148" id="EBo-eA-Lnn"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
                                                     <nil key="textColor"/>
@@ -88,18 +90,20 @@
                                                 <constraint firstItem="n67-88-4Ls" firstAttribute="leading" secondItem="QVQ-jf-TCT" secondAttribute="leadingMargin" id="N8r-qw-gYL"/>
                                                 <constraint firstItem="GLN-Rs-bbO" firstAttribute="leading" secondItem="QVQ-jf-TCT" secondAttribute="leadingMargin" constant="160" id="PrG-Vr-9JV"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="n67-88-4Ls" secondAttribute="bottom" constant="5" id="SX6-HW-FmP"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="j81-wY-4w9" secondAttribute="trailing" constant="8" id="Zcs-Pi-SVm"/>
+                                                <constraint firstItem="QC8-Cc-HLv" firstAttribute="top" secondItem="QVQ-jf-TCT" secondAttribute="topMargin" constant="28" id="WMO-Oo-Kaf"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="QC8-Cc-HLv" secondAttribute="bottom" constant="8" id="YWo-pY-IkN"/>
                                                 <constraint firstItem="AzY-Ve-j0B" firstAttribute="leading" secondItem="n67-88-4Ls" secondAttribute="trailing" constant="8" id="dBs-jb-0Yo"/>
-                                                <constraint firstItem="j81-wY-4w9" firstAttribute="leading" secondItem="AzY-Ve-j0B" secondAttribute="trailing" constant="116" id="l1N-ir-Csz"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="j81-wY-4w9" secondAttribute="bottom" constant="2" id="mFn-ib-cmZ"/>
+                                                <constraint firstItem="QC8-Cc-HLv" firstAttribute="leading" secondItem="AzY-Ve-j0B" secondAttribute="trailing" constant="6" id="iVs-vO-1ec"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="AzY-Ve-j0B" secondAttribute="bottom" constant="1" id="qVb-kS-qDd"/>
-                                                <constraint firstItem="j81-wY-4w9" firstAttribute="top" secondItem="QVQ-jf-TCT" secondAttribute="topMargin" constant="28" id="rcC-Nw-vWw"/>
+                                                <constraint firstItem="QC8-Cc-HLv" firstAttribute="trailing" secondItem="QVQ-jf-TCT" secondAttribute="trailingMargin" id="vqv-c3-Znf"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="progressBar" destination="GLN-Rs-bbO" id="tDV-dM-yo7"/>
                                             <outlet property="taskName" destination="AzY-Ve-j0B" id="jsR-IO-1bU"/>
+                                            <outlet property="taskNotes" destination="QC8-Cc-HLv" id="tEr-Wa-41s"/>
                                             <outlet property="taskNumber" destination="n67-88-4Ls" id="Qfa-b2-Rf1"/>
+                                            <segue destination="ido-tI-aq3" kind="presentation" identifier="updateSegue" id="6PQ-Fe-9vQ"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -639,5 +643,6 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="6S0-TO-JiA"/>
+        <segue reference="6PQ-Fe-9vQ"/>
     </inferredMetricsTieBreakers>
 </document>
