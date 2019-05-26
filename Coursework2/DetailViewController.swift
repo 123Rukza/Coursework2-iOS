@@ -8,12 +8,13 @@
 
 import UIKit
 import CoreData
+import UserNotifications
 
 protocol SelectedProject {
     func getSelectedProject() -> Project
 }
 
-class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SelectedProject, NSFetchedResultsControllerDelegate {
+class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SelectedProject, NSFetchedResultsControllerDelegate, UNUserNotificationCenterDelegate {
     
     var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     var selectedProject:Project? = nil
@@ -128,6 +129,8 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
             if (selectedProject != nil) {
                 updateProjectArea()
             }
+            
+            showInternalNotification()
         }
     }
     
@@ -199,6 +202,9 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: {didAllow, error in
+            
+        })
         configureView()
     }
     
@@ -217,6 +223,35 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 }
             }
         }
+    }
+    
+    func showInternalNotification() {
+        var overdueMessage = ""
+        
+        for task in fetchedResultsController?.fetchedObjects as! [Task] {
+            if (task.end! <= Date() && task.percentage != 100) {
+                if task.alert {
+                    overdueMessage.append(task.name! + ", ")
+                }
+            }
+        }
+        
+        if overdueMessage.count > 0 {
+            let message = UNMutableNotificationContent()
+            message.title = "Over due tasks warning"
+            message.body = "The tasks \"" + overdueMessage.dropLast(2) + "\" are overdue. Please take note!"
+            message.badge = 1
+            
+            let notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            let messageStart  = UNNotificationRequest(identifier: "message", content: message, trigger: notificationTrigger)
+            
+            UNUserNotificationCenter.current().delegate = self
+            UNUserNotificationCenter.current().add(messageStart, withCompletionHandler: nil)
+        }
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .sound, .badge])
     }
     
 }
